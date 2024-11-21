@@ -22,44 +22,57 @@ public class FichaInscricaoService {
     private final ProdutorRuralRepository produtorRuralRepository;
     private final ProdutoRepository produtoRepository;
 
+    public FichaInscricaoDTO save(FichaInscricaoDTO fichaInscricaoDTO) {
+        FichaInscricao fichaInscricao = new FichaInscricao();
+        BeanUtils.copyProperties(fichaInscricaoDTO, fichaInscricao);
+        fichaInscricao.setProdutorRural(produtorRuralRepository.findById(fichaInscricaoDTO.produtorRuralId())
+                .orElseThrow(() -> new RuntimeException("Produtor Rural não encontrado")));
+        fichaInscricao.setProduto(produtoRepository.findById(fichaInscricaoDTO.produtoId())
+                .orElseThrow(() -> new RuntimeException("Produto não encontrado")));
+
+        FichaInscricao savedFicha = fichaInscricaoRepository.save(fichaInscricao);
+        return convertToDTO(savedFicha);
+    }
+
     public List<FichaInscricaoDTO> findAll() {
         List<FichaInscricao> fichas = fichaInscricaoRepository.findAll();
         return fichas.stream()
-                .map(ficha -> new FichaInscricaoDTO(
-                        ficha.getId(),
-                        ficha.getNumeroInscricao(),
-                        ficha.getTipoCultivo(),
-                        ficha.getProdutorRural().getId(),
-                        ficha.getProduto().getId()))
+                .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     public Optional<FichaInscricaoDTO> findById(UUID id) {
         Optional<FichaInscricao> ficha = fichaInscricaoRepository.findById(id);
-        return ficha.map(f -> new FichaInscricaoDTO(
-                f.getId(),
-                f.getNumeroInscricao(),
-                f.getTipoCultivo(),
-                f.getProdutorRural().getId(),
-                f.getProduto().getId()));
+        return ficha.map(this::convertToDTO);
     }
 
-    public FichaInscricaoDTO save(FichaInscricaoDTO fichaInscricaoDTO) {
-        FichaInscricao fichaInscricao = new FichaInscricao();
-        BeanUtils.copyProperties(fichaInscricaoDTO, fichaInscricao);
-        fichaInscricao.setProdutorRural(produtorRuralRepository.findById(fichaInscricaoDTO.produtorRuralId()).orElseThrow(() -> new RuntimeException("Produtor Rural não encontrado")));
-        fichaInscricao.setProduto(produtoRepository.findById(fichaInscricaoDTO.produtoId()).orElseThrow(() -> new RuntimeException("Produto não encontrado")));
+    public FichaInscricaoDTO edit(UUID id, FichaInscricaoDTO fichaInscricaoDTO) {
+        FichaInscricao fichaInscricao = fichaInscricaoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ficha de Inscrição não encontrada"));
+
+        fichaInscricao.setTipoCultivo(fichaInscricaoDTO.tipoCultivo());
+
+        fichaInscricao.setProdutorRural(produtorRuralRepository.findById(fichaInscricaoDTO.produtorRuralId())
+                .orElseThrow(() -> new RuntimeException("Produtor Rural não encontrado")));
+        fichaInscricao.setProduto(produtoRepository.findById(fichaInscricaoDTO.produtoId())
+                .orElseThrow(() -> new RuntimeException("Produto não encontrado")));
 
         FichaInscricao savedFicha = fichaInscricaoRepository.save(fichaInscricao);
-        return new FichaInscricaoDTO(
-                savedFicha.getId(),
-                savedFicha.getNumeroInscricao(),
-                savedFicha.getTipoCultivo(),
-                savedFicha.getProdutorRural().getId(),
-                savedFicha.getProduto().getId());
+        return convertToDTO(savedFicha);
     }
 
     public void deleteById(UUID id) {
         fichaInscricaoRepository.deleteById(id);
     }
+
+    private FichaInscricaoDTO convertToDTO(FichaInscricao fichaInscricao) {
+        return new FichaInscricaoDTO(
+                fichaInscricao.getId(),
+                fichaInscricao.getNumeroInscricao(),
+                fichaInscricao.getTipoCultivo(),
+                fichaInscricao.getProdutorRural().getId(),
+                fichaInscricao.getProduto().getId()
+        );
+    }
+
 }

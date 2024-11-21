@@ -18,6 +18,12 @@ public class ProdutorRuralController {
 
     private final ProdutorRuralService produtorRuralService;
 
+    @PostMapping
+    public ResponseEntity<String> create(@Valid @RequestBody ProdutorRuralDTO produtorRuralDTO) {
+        ProdutorRuralDTO savedProdutor = produtorRuralService.save(produtorRuralDTO);
+        return ResponseEntity.status(201).body("Produtor Rural Cadastrado com Sucesso! ID: " + savedProdutor.id());
+    }
+
     @GetMapping
     public List<ProdutorRuralDTO> getAll() {
         return produtorRuralService.findAll();
@@ -30,24 +36,15 @@ public class ProdutorRuralController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping
-    public ResponseEntity<String> create(@Valid @RequestBody ProdutorRuralDTO produtorRuralDTO) {
-        ProdutorRuralDTO savedProdutor = produtorRuralService.save(produtorRuralDTO);
-        return ResponseEntity.status(201).body("Produtor Rural Cadastrado com Sucesso! ID: " + savedProdutor.id());
-    }
-
     @PutMapping("/{id}")
     public ResponseEntity<String> edit(@PathVariable UUID id, @Valid @RequestBody ProdutorRuralDTO produtorRuralDTO) {
-        ProdutorRuralDTO updatedProdutor = produtorRuralService.findById(id)
-                .map(produtor -> produtorRuralService.save(produtorRuralDTO))
-                .orElseThrow(() -> new RuntimeException("Produtor Rural não encontrado para edição"));
-
+        ProdutorRuralDTO updatedProdutor = produtorRuralService.edit(id, produtorRuralDTO);
         return ResponseEntity.ok("Produtor Rural Editado com Sucesso! ID: " + updatedProdutor.id());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         produtorRuralService.deleteById(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.noContent().header("Message", "Produtor Rural Deletado com Sucesso!").build();
     }
 }

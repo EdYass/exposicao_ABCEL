@@ -17,6 +17,12 @@ public class FichaInscricaoController {
 
     private final FichaInscricaoService fichaInscricaoService;
 
+    @PostMapping
+    public ResponseEntity<String> create(@Valid @RequestBody FichaInscricaoDTO fichaInscricaoDTO) {
+        FichaInscricaoDTO savedFicha = fichaInscricaoService.save(fichaInscricaoDTO);
+        return ResponseEntity.status(201).body("Ficha de Inscrição Cadastrada com Sucesso! ID: " + savedFicha.id());
+    }
+
     @GetMapping
     public List<FichaInscricaoDTO> getAll() {
         return fichaInscricaoService.findAll();
@@ -29,24 +35,15 @@ public class FichaInscricaoController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping
-    public ResponseEntity<String> create(@Valid @RequestBody FichaInscricaoDTO fichaInscricaoDTO) {
-        FichaInscricaoDTO savedFicha = fichaInscricaoService.save(fichaInscricaoDTO);
-        return ResponseEntity.status(201).body("Ficha de Inscrição Cadastrada com Sucesso! ID: " + savedFicha.id());
-    }
-
     @PutMapping("/{id}")
     public ResponseEntity<String> edit(@PathVariable UUID id, @Valid @RequestBody FichaInscricaoDTO fichaInscricaoDTO) {
-        FichaInscricaoDTO updatedFicha = fichaInscricaoService.findById(id)
-                .map(ficha -> fichaInscricaoService.save(fichaInscricaoDTO))
-                .orElseThrow(() -> new RuntimeException("Ficha de Inscrição não encontrada para edição"));
-
+        FichaInscricaoDTO updatedFicha = fichaInscricaoService.edit(id, fichaInscricaoDTO);
         return ResponseEntity.ok("Ficha de Inscrição Editada com Sucesso! ID: " + updatedFicha.id());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         fichaInscricaoService.deleteById(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.noContent().header("Message", "Ficha de Tncrição Deletada com Sucesso!").build();
     }
 }

@@ -17,6 +17,13 @@ public class ProdutoController {
 
     private final ProdutoService produtoService;
 
+    @PostMapping
+    public ResponseEntity<String> create(@Valid @RequestBody ProdutoDTO produtoDTO) {
+        ProdutoDTO savedProduto = produtoService.save(produtoDTO);
+        return ResponseEntity.status(201).body("Produto Cadastrado com Sucesso! ID: " + savedProduto.id());
+    }
+
+
     @GetMapping
     public List<ProdutoDTO> getAll() {
         return produtoService.findAll();
@@ -29,24 +36,15 @@ public class ProdutoController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping
-    public ResponseEntity<String> create(@Valid @RequestBody ProdutoDTO produtoDTO) {
-        ProdutoDTO savedProduto = produtoService.save(produtoDTO);
-        return ResponseEntity.status(201).body("Produto Cadastrado com Sucesso! ID: " + savedProduto.id());
-    }
-
     @PutMapping("/{id}")
     public ResponseEntity<String> edit(@PathVariable UUID id, @Valid @RequestBody ProdutoDTO produtoDTO) {
-        ProdutoDTO updatedProduto = produtoService.findById(id)
-                .map(produto -> produtoService.save(produtoDTO))
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado para edição"));
-
+        ProdutoDTO updatedProduto = produtoService.edit(id, produtoDTO);
         return ResponseEntity.ok("Produto Editado com Sucesso! ID: " + updatedProduto.id());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         produtoService.deleteById(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.noContent().header("Message", "Produto Deletado com Sucesso!").build();
     }
 }
