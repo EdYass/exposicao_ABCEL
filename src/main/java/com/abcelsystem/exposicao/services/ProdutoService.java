@@ -28,13 +28,13 @@ public class ProdutoService {
     public List<ProdutoDTO> findAll() {
         List<Produto> produtos = produtoRepository.findAll();
         return produtos.stream()
-                .map(this::convertToDTO)  // Usa o método auxiliar para conversão
+                .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     public Optional<ProdutoDTO> findById(UUID id) {
         Optional<Produto> produto = produtoRepository.findById(id);
-        return produto.map(this::convertToDTO);  // Usa o método auxiliar para conversão
+        return produto.map(this::convertToDTO);
     }
 
     public ProdutoDTO edit(UUID id, ProdutoDTO produtoDTO) {

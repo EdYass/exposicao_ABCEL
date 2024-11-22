@@ -1,6 +1,7 @@
 package com.abcelsystem.exposicao.controllers;
 
 import com.abcelsystem.exposicao.dtos.FichaInscricaoDTO;
+import com.abcelsystem.exposicao.dtos.FichaInscricaoDetalhadaDTO;
 import com.abcelsystem.exposicao.services.FichaInscricaoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,18 @@ public class FichaInscricaoController {
     @GetMapping("/{id}")
     public ResponseEntity<FichaInscricaoDTO> getById(@PathVariable UUID id) {
         return fichaInscricaoService.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/ficha_detalhada")
+    public List<FichaInscricaoDetalhadaDTO> getAllDetail() {
+        return fichaInscricaoService.findAllDetail();
+    }
+
+    @GetMapping("/ficha_detalhada/{id}")
+    public ResponseEntity<FichaInscricaoDetalhadaDTO> getByIdDetail(@PathVariable UUID id) {
+        return fichaInscricaoService.findByIdDetail(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

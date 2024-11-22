@@ -1,6 +1,9 @@
 package com.abcelsystem.exposicao.services;
 
 import com.abcelsystem.exposicao.dtos.FichaInscricaoDTO;
+import com.abcelsystem.exposicao.dtos.FichaInscricaoDetalhadaDTO;
+import com.abcelsystem.exposicao.dtos.ProdutoDTO;
+import com.abcelsystem.exposicao.dtos.ProdutorRuralDTO;
 import com.abcelsystem.exposicao.entities.FichaInscricao;
 import com.abcelsystem.exposicao.repositories.FichaInscricaoRepository;
 import com.abcelsystem.exposicao.repositories.ProdutorRuralRepository;
@@ -46,6 +49,19 @@ public class FichaInscricaoService {
         return ficha.map(this::convertToDTO);
     }
 
+    public List<FichaInscricaoDetalhadaDTO> findAllDetail() {
+        List<FichaInscricao> fichas = fichaInscricaoRepository.findAll();
+        return fichas.stream()
+                .map(this::convertToDetailedDTO)
+                .collect(Collectors.toList());
+    }
+
+    public Optional<FichaInscricaoDetalhadaDTO> findByIdDetail(UUID id) {
+        Optional<FichaInscricao> ficha = fichaInscricaoRepository.findById(id);
+        return ficha.map(this::convertToDetailedDTO);
+    }
+
+
     public FichaInscricaoDTO edit(UUID id, FichaInscricaoDTO fichaInscricaoDTO) {
         FichaInscricao fichaInscricao = fichaInscricaoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ficha de Inscrição não encontrada"));
@@ -72,6 +88,30 @@ public class FichaInscricaoService {
                 fichaInscricao.getTipoCultivo(),
                 fichaInscricao.getProdutorRural().getId(),
                 fichaInscricao.getProduto().getId()
+        );
+    }
+
+    private FichaInscricaoDetalhadaDTO convertToDetailedDTO(FichaInscricao fichaInscricao) {
+        ProdutorRuralDTO produtorRuralDTO = new ProdutorRuralDTO(
+                fichaInscricao.getProdutorRural().getId(),
+                fichaInscricao.getProdutorRural().getNome(),
+                fichaInscricao.getProdutorRural().getMunicipio(),
+                fichaInscricao.getProdutorRural().getBairro(),
+                fichaInscricao.getProdutorRural().getTelefone(),
+                fichaInscricao.getProdutorRural().getEmail()
+        );
+
+        ProdutoDTO produtoDTO = new ProdutoDTO(
+                fichaInscricao.getProduto().getId(),
+                fichaInscricao.getProduto().getNome(),
+                fichaInscricao.getProduto().getVariedade()
+        );
+
+        return new FichaInscricaoDetalhadaDTO(
+                fichaInscricao.getNumeroInscricao(),
+                fichaInscricao.getTipoCultivo(),
+                produtorRuralDTO,
+                produtoDTO
         );
     }
 
