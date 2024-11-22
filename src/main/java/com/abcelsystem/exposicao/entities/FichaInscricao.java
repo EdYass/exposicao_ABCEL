@@ -1,10 +1,10 @@
 package com.abcelsystem.exposicao.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -24,10 +24,10 @@ public class FichaInscricao {
     private TipoCultivo tipoCultivo;
 
     @ManyToOne
-    @JoinColumn(name = "produtor_rural_id")
+    @JoinColumn(name = "produtor_rural_id", nullable = false)
     private ProdutorRural produtorRural;
 
     @ManyToOne
-    @JoinColumn(name = "produto_id")
+    @JoinColumn(name = "produto_id", nullable = false)
     private Produto produto;
 }

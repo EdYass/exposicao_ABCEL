@@ -36,12 +36,12 @@ public class FichaInscricaoController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/ficha_detalhada")
+    @GetMapping("/detalhadas")
     public List<FichaInscricaoDetalhadaDTO> getAllDetail() {
         return fichaInscricaoService.findAllDetail();
     }
 
-    @GetMapping("/ficha_detalhada/{id}")
+    @GetMapping("/detalhada/{id}")
     public ResponseEntity<FichaInscricaoDetalhadaDTO> getByIdDetail(@PathVariable UUID id) {
         return fichaInscricaoService.findByIdDetail(id)
                 .map(ResponseEntity::ok)

@@ -41,7 +41,6 @@ public class ProdutorRuralService {
         ProdutorRural produtorRural = produtorRuralRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Produtor Rural não encontrado"));
 
-        // Atualiza os campos do produtor rural
         produtorRural.setNome(produtorRuralDTO.nome());
         produtorRural.setMunicipio(produtorRuralDTO.municipio());
         produtorRural.setBairro(produtorRuralDTO.bairro());

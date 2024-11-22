@@ -108,6 +108,7 @@ public class FichaInscricaoService {
         );
 
         return new FichaInscricaoDetalhadaDTO(
+                fichaInscricao.getId(),
                 fichaInscricao.getNumeroInscricao(),
                 fichaInscricao.getTipoCultivo(),
                 produtorRuralDTO,
