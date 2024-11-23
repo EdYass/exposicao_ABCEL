@@ -8,6 +8,10 @@ import com.abcelsystem.exposicao.repositories.JuizRepository;
 import com.abcelsystem.exposicao.repositories.FichaInscricaoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -59,6 +63,15 @@ public class AvaliacaoService {
         Optional<Avaliacao> avaliacao = avaliacaoRepository.findById(id);
         return avaliacao.map(this::convertToDetailedDTO);
     }
+
+    public List<AvaliacaoDTO> getTop3PorProduto(UUID produtoId) {
+        var top3 = PageRequest.of(0, 3);
+        var top3Avaliacoes = avaliacaoRepository.findTop3ByProdutoIdOrderByNotaFinal(produtoId, top3);
+        return top3Avaliacoes.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
 
     public AvaliacaoDTO edit(UUID id, AvaliacaoDTO avaliacaoDTO) {
         Avaliacao avaliacao = avaliacaoRepository.findById(id)

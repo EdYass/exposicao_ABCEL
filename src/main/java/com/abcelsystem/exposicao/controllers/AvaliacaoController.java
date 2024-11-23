@@ -60,4 +60,10 @@ public class AvaliacaoController {
         avaliacaoService.deleteById(id);
         return ResponseEntity.noContent().header("Message", "Avaliação Deletada com Sucesso!").build();
     }
+
+    @GetMapping("/top3/{produtoId}")
+    public ResponseEntity<List<AvaliacaoDTO>> getTop3(@PathVariable UUID produtoId) {
+        List<AvaliacaoDTO> top3Avaliacoes = avaliacaoService.getTop3PorProduto(produtoId);
+        return ResponseEntity.ok(top3Avaliacoes);
+    }
 }
