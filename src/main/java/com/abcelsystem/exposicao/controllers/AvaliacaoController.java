@@ -1,7 +1,8 @@
 package com.abcelsystem.exposicao.controllers;
 
 import com.abcelsystem.exposicao.dtos.AvaliacaoDTO;
-import com.abcelsystem.exposicao.dtos.AvaliacaoDetalhadaDTO;
+import com.abcelsystem.exposicao.dtos.details.AvaliacaoDetalhadaDTO;
+import com.abcelsystem.exposicao.dtos.details.TopAvaliacaoDTO;
 import com.abcelsystem.exposicao.services.AvaliacaoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -49,6 +50,11 @@ public class AvaliacaoController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/ficha/{fichaInscricaoId}")
+    public List<AvaliacaoDTO> findByFicha(@PathVariable UUID fichaInscricaoId) {
+        return avaliacaoService.findByFicha(fichaInscricaoId);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<String> edit(@PathVariable UUID id, @Valid @RequestBody AvaliacaoDTO avaliacaoDTO) {
         AvaliacaoDTO updatedAvaliacao = avaliacaoService.edit(id, avaliacaoDTO);
@@ -62,8 +68,8 @@ public class AvaliacaoController {
     }
 
     @GetMapping("/top3/{produtoId}")
-    public ResponseEntity<List<AvaliacaoDTO>> getTop3(@PathVariable UUID produtoId) {
-        List<AvaliacaoDTO> top3Avaliacoes = avaliacaoService.getTop3PorProduto(produtoId);
+    public ResponseEntity<List<TopAvaliacaoDTO>> getTop3(@PathVariable UUID produtoId) {
+        List<TopAvaliacaoDTO> top3Avaliacoes = avaliacaoService.getTop3PorProduto(produtoId);
         return ResponseEntity.ok(top3Avaliacoes);
     }
 }

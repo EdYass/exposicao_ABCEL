@@ -9,5 +9,4 @@ public record FichaInscricaoDTO(
         TipoCultivo tipoCultivo,
         UUID produtorRuralId,
         UUID produtoId
-) {
-}
+) {}

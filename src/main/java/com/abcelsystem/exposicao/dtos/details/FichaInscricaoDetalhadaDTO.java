@@ -1,5 +1,7 @@
-package com.abcelsystem.exposicao.dtos;
+package com.abcelsystem.exposicao.dtos.details;
 
+import com.abcelsystem.exposicao.dtos.ProdutoDTO;
+import com.abcelsystem.exposicao.dtos.ProdutorRuralDTO;
 import com.abcelsystem.exposicao.entities.TipoCultivo;
 
 import java.util.UUID;

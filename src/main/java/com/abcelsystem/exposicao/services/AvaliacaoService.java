@@ -1,15 +1,14 @@
 package com.abcelsystem.exposicao.services;
 
 import com.abcelsystem.exposicao.dtos.AvaliacaoDTO;
-import com.abcelsystem.exposicao.dtos.AvaliacaoDetalhadaDTO;
+import com.abcelsystem.exposicao.dtos.details.AvaliacaoDetalhadaDTO;
+import com.abcelsystem.exposicao.dtos.details.TopAvaliacaoDTO;
 import com.abcelsystem.exposicao.entities.Avaliacao;
 import com.abcelsystem.exposicao.repositories.AvaliacaoRepository;
 import com.abcelsystem.exposicao.repositories.JuizRepository;
 import com.abcelsystem.exposicao.repositories.FichaInscricaoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 
 import org.springframework.stereotype.Service;
@@ -64,14 +63,33 @@ public class AvaliacaoService {
         return avaliacao.map(this::convertToDetailedDTO);
     }
 
-    public List<AvaliacaoDTO> getTop3PorProduto(UUID produtoId) {
-        var top3 = PageRequest.of(0, 3);
-        var top3Avaliacoes = avaliacaoRepository.findTop3ByProdutoIdOrderByNotaFinal(produtoId, top3);
-        return top3Avaliacoes.stream()
+    public List<AvaliacaoDTO> findByFicha(UUID fichaInscricaoId) {
+        List<Avaliacao> avaliacoes = avaliacaoRepository.findByFichaInscricaoId(fichaInscricaoId);
+        return avaliacoes.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
+    public List<TopAvaliacaoDTO> getTop3PorProduto(UUID produtoId) {
+        var top3 = PageRequest.of(0, 3);
+        return avaliacaoRepository.findTop3ByProdutoIdOrderByNotaFinal(produtoId, top3).stream()
+                .collect(Collectors.groupingBy(
+                        avaliacao -> avaliacao.getFichaInscricao().getId(),
+                        Collectors.averagingDouble(Avaliacao::getNotaFinal)))
+                .entrySet().stream()
+                .sorted((e1, e2) -> Double.compare(e2.getValue(), e1.getValue())) // Ordenar por média decrescente
+                .limit(3) // Limitar ao top 3
+                .map(entry -> {
+                    var ficha = fichaInscricaoRepository.findById(entry.getKey())
+                            .orElseThrow(() -> new RuntimeException("Ficha não encontrada"));
+                    return new TopAvaliacaoDTO(
+                            ficha.getId(),
+                            ficha.getNumeroInscricao(),
+                            entry.getValue()
+                    );
+                })
+                .collect(Collectors.toList());
+    }
 
     public AvaliacaoDTO edit(UUID id, AvaliacaoDTO avaliacaoDTO) {
         Avaliacao avaliacao = avaliacaoRepository.findById(id)

@@ -5,6 +5,5 @@ import java.util.UUID;
 public record ProdutoDTO(
         UUID id,
         String nome,
-        String variedade) {
-
-}
+        String variedade
+) {}

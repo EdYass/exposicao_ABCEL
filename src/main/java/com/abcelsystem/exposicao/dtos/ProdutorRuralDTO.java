@@ -9,5 +9,4 @@ public record ProdutorRuralDTO(
         String bairro,
         String telefone,
         String email
-) {
-}
+) {}

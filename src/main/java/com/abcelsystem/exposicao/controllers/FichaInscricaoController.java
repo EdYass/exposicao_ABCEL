@@ -1,7 +1,7 @@
 package com.abcelsystem.exposicao.controllers;
 
 import com.abcelsystem.exposicao.dtos.FichaInscricaoDTO;
-import com.abcelsystem.exposicao.dtos.FichaInscricaoDetalhadaDTO;
+import com.abcelsystem.exposicao.dtos.details.FichaInscricaoDetalhadaDTO;
 import com.abcelsystem.exposicao.services.FichaInscricaoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

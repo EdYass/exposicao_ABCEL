@@ -1,4 +1,4 @@
-package com.abcelsystem.exposicao.dtos;
+package com.abcelsystem.exposicao.dtos.details;
 
 public record AvaliacaoDetalhadaDTO(
         String id,

@@ -1,7 +1,7 @@
 package com.abcelsystem.exposicao.services;
 
 import com.abcelsystem.exposicao.dtos.FichaInscricaoDTO;
-import com.abcelsystem.exposicao.dtos.FichaInscricaoDetalhadaDTO;
+import com.abcelsystem.exposicao.dtos.details.FichaInscricaoDetalhadaDTO;
 import com.abcelsystem.exposicao.dtos.ProdutoDTO;
 import com.abcelsystem.exposicao.dtos.ProdutorRuralDTO;
 import com.abcelsystem.exposicao.entities.FichaInscricao;
